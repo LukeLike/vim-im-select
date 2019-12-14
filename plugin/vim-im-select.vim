@@ -48,7 +48,7 @@ endif
 let g:insert_ime_mode_ = g:im_select_default_im
 
 function! s:CloseIME()
-  echom g:im_select_enable
+  " echom g:im_select_enable
   if !g:im_select_enable
     return
   endif
@@ -64,7 +64,7 @@ function! s:CloseIME()
 endfunction
 
 function! s:RestoreIME()
-    echom g:im_select_enable
+    " echom g:im_select_enable
   if !g:im_select_enable
     return
   endif
