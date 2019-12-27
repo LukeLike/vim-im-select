@@ -47,19 +47,29 @@ endif
 
 let g:insert_ime_mode_ = g:im_select_default_im
 
+" add a timeout in case of blocking
+let g:im_select_timeout = '1s'
+function! s:system_wait(cmd)
+  return system('timeout '.g:im_select_timeout.' '.a:cmd)
+endfunction
+
 function! s:CloseIME()
   " echom g:im_select_enable
   if !g:im_select_enable
     return
   endif
-  let g:insert_ime_mode_ = system(g:im_select_obtain_im_cmd)
+  let g:insert_ime_mode_ = s:system_wait(g:im_select_obtain_im_cmd)
+  " nothing return before timeout, so do nothing
+  if v:shell_error != 0
+      return
+  endif
   let l:cmd_ = substitute(
               \ g:im_select_switch_im_cmd,
               \ '{im}',
               \ g:im_select_default_im, 'g')
   " echom l:cmd_
   if g:insert_ime_mode_ != g:im_select_default_im
-    call system(cmd_)
+    call s:system_wait(cmd_)
   endif
 endfunction
 
@@ -74,7 +84,7 @@ function! s:RestoreIME()
                 \ g:insert_ime_mode_, 'g')
   " echom l:cmd_
   if g:insert_ime_mode_ != g:im_select_default_im
-    call system(l:cmd_)
+    call s:system_wait(l:cmd_)
     let g:insert_ime_mode_ = g:im_select_default_im
   endif
 endfunction
